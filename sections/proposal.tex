@@ -1,0 +1,251 @@
+\section{Problem Statement}
+
+The thesis is part of a research project concerned with developing an authentication system
+that makes use of \acp{PUF} for asserting identities.
+Authentication is the act of establishing a persons identity by having them prove
+that they are, who they say they are \cite[cp.][p. 398]{Basavala2012}.
+
+In today's electronic access control systems, digital keys are used for authentication.
+They are stored in a database and assigned to a physical entity like a person's
+fingerprint or a smart card.
+This approach can be problematic, as the digital key is not directly bound to
+the physical object. If an attacker were to gain access to the key,
+they could use it to create a copy of the physical entity
+and gain access. \cite[cp.][p. 81]{Gao2020}
+
+A solution to this might be \acp{PUF}, which are physical devices, instead of 
+digitally stored keys.
+During manufacturing, certain uncontrollable production tolerances lead to
+each device differing slightly from every other.
+This introduces unique characteristics and a certain variability and randomness into every \ac{PUF}, 
+which can be used to create a unique fingerprint of every device without the need for a digital key.
+While the variation is measurable, it is considered impractical to create an identical physical copy of 
+a \ac{PUF}, because it is deemed impossible to gain full control of the
+tolerances and imitate the slight variations of another \ac{PUF}, that were introduced in manufacturing. \cite[cp.][p. 81]{Gao2020}
+
+The physical characteristics of \acp{PUF} have to be measured to be able to infer an identity from them.
+This is done using a \ac{CRP}. The challenge is some input given to the \ac{PUF}, which uses it to generate an output (the response),
+leveraging its unique characteristics. For the same challenge, each individual \ac{PUF} will therefore generate a different response.
+By previously generating and recording specific \acp{CRP} or using neural networks to evaluate a response to a
+given challenge, the authenticity of a given \ac{PUF} can be established. \cite[cp.][p. 81]{Gao2020}
+
+This thesis focuses on the infrastructure behind a challenge-response based authentication system using \acp{PUF}.
+This includes designing a database for storing the required data, specifying a protocol for
+communication between the components, developing a backend for generating and sending challenges to the \ac{PUF}
+and evaluating the responses, among other things.
+Because of this focus the thesis has been titled:
+\begin{quote}\begin{center}\emph{An Infrastructure for a Challenge-Response based Authentication System
+using Physical Unclonable Functions}\end{center}\end{quote}
+
+\newpage
+\section{Research Questions}
+
+It is hard to define specific research questions for this thesis, as more literature research is necessary
+to understand, which components the infrastructure consists of and what the main challenges are going to be.
+Looking at the project overall, this thesis should mainly answer the following question, which is closely
+related to the problem statement and title:
+
+\begin{quote}
+\emph{RQ1: What does the infrastructure for an authentication system using \acp{PUF} for physical access control look like?}
+\end{quote}
+
+Extending this overarching question, many different subquestions related to the individual components and their relationship could be asked.
+Some of them might be:
+
+\begin{quote}
+\emph{RQ1.1: Which components are needed as part of the infrastructure?}\\
+\emph{RQ1.2: How should the required data be organized in the database?}\\
+\emph{RQ1.3: How is data transferred between components?}
+\end{quote}
+
+This is definitely not a final set of questions, but rather a look at what the exact research questions in the final thesis may look like.
+
+As implementing a prototype is also part of the thesis, in addition to the conceptual design, 
+a second overarching question is this:
+
+\begin{quote}
+\emph{RQ2: How can a functional prototype for the proposed infrastructure concept be implemented?}
+\end{quote}
+
+There is another aspect of this thesis, which is the evaluation of existing concepts and research on the topic.
+It is not planned to make this a seperate research question, as it is not an end in
+itself, but rather a means to answer \emph{RQ1} and \emph{2}.
+
+\newpage
+\section{Relevance and Existing Research}
+
+The earliest paper about \acp{PUF} found on Google Scholar was published in 2004 and has been cited over 100 times.
+Furthermore, Google Scholar lists over 650 results for papers published in 2022 alone,
+that mention \acp{PUF}. This shows that the technology has only been conceptualized quite recently 
+and has become incredibly relevant in today's research.
+
+\cite{Suh2007} seems to be the most cited paper on \acp{PUF} and shows how the technology can
+be used for authentication of physical devices using integrated circuits.
+
+\cite{Herder2014} is another well received paper, which explains possible applications
+for \acp{PUF} in authentication scenarios and gives an overview of the different types
+of \acp{PUF}. \cite{Devadas2008} additionally goes into the design of \ac{PUF} based
+\ac{RFID} devices and outlines a basic challenge-response infrastructure.
+
+A problem that many of these solutions face, is that the \ac{CRP} are explicitly stored
+in a database. An attacker with access to this data would be able to
+circumvent the entire authentication system, as they would know both challenge and response.
+\cite{Chatterjee2019} and \cite{Yilmaz2018} propose protocols that do not require storing \acp{CRP} explicitly
+by verifying the responses using cryptographic methods or neural networks.
+
+The papers mentioned above are only a small set of papers that were found during
+literature research thus far, which was mostly focused on the basics of \acp{PUF}.
+The bulk of literature research still has to be completed using the methodology outlined in the next section.
+\cite{Gao2020} is a review article published in 2020 containing references a wide variety
+of other research on the topic, which is going to be examined. Additionally, papers about
+other relevant fundamental topics such as database design need to be found and studied.
+
+\newpage
+\section{Approach and Methodology}
+
+To achieve the research goal of designing and implementing an infrastructure,
+each of the sections are approached differently.
+
+In the fundamentals section, literature research is used to gain insight about the current
+state of scientific research and to build the basis for the conceptualization and implementation stages.
+As there are many different topics like database design or challenge-response protocols to cover
+and the review of existing literature is not the main goal of the thesis, a full systematic literature
+review will not be conducted. The approach to literature research is described in the following.
+
+The main sources for finding literature will be the EBSCO Discovery Service, IEEEE Xplore,
+the ACM Digital Library, Springer Link and Google Scholar.
+This should cover the most important sources for scientific literature in the field.
+The first step will be to gain a good understanding of existing \ac{PUF} based authentication
+systems and their components.
+From there, search terms are developed dynamically depending on the required knowledge.
+Titles and abstracts of the most cited and relevant papers are scanned to find the papers
+and books providing the most relevant information.
+Additionally, if current review articles are found for a given topic,
+snowballing might be used to find additional relevant information.
+
+As this thesis is part of a research project developing a full \ac{POC} for a \ac{PUF} based
+access control system, some project specific knowledge will be required.
+An example for this is understanding the specific protocols of the locking systems, that are used
+in the project's \ac{POC}.
+As this knowledge is held by experts in the research group and external partners,
+expert interviews could be conducted to be able to better apply the general knowledge from
+literature research to the specific problem space. 
+
+Once the required knowledge has been gathered, the conceptualization phase begins.
+Here, the existing solutions discovered in the research for each part of
+the infrastructure have to be evaluated based on the requirements of the project.
+An approach to this would be to define evaluation criteria and create a weighted sum model
+for each component, but this will get very complex.
+Another approach might be to take the most fitting ideas from each existing approach and
+combining them into a system which fits the concrete problem found in the research project.
+The benefit of this is reduced complexity and more flexibility, but it could lead to
+"gut feeling" decisions, which would reduce the scientific rigidity of the thesis. More reading has to be done
+about which is the best choice.
+While reading, the design science research approach was discovered. \cite{Peffers2007}
+It could offer interesting methodologies that could be used in the thesis, but has not yet been
+evaluated enough.
+
+The goal for the implementation section of the thesis is to create a prototype.
+Therefore, a language capable of rapid prototyping like Python is most likely going
+to be selected. Some components of the finished system, like the neural networks and \acp{PUF},
+are not part of this thesis. Because of this, they are not going to be part of the prototype implementation and
+mock implementations of their interfaces and responses will have to be created.
+Unit tests could be implemented to evaluate the finished prototype and to better understand
+possible edge cases.
+
+\newpage
+\section{Structure}
+
+This section outlines a rough structure for the thesis.
+Take into account that this is based on the currently limited knowledge about the topic
+and is subject to change.
+
+\begin{enumerate}
+    \item \textbf{Introduction}: Contains motivation, problem description, research goals, methodology and structure.
+    \item \textbf{Fundamentals}: Will mostly consist of literature research and aims to give an understanding
+    of what the current state of scientific research on the following topics is:
+    \begin{itemize}
+        \item Challenge-Response Protocols
+        \item Database solutions for access control systems
+        \item Neural Networks in relation to \acp{PUF}\\
+        This point will not go into the design of the neural networks itself as it's beyond the scope,
+        but rather examine the infrastructural requirements that neural networks used to evaluate \acp{PUF}
+        have in terms of data size, computational power and other aspects.
+        \item Other Components
+    \end{itemize}
+    It gives a basis for the conception and implementation sections of the thesis.
+    \item \textbf{Conception}: Will contain the conceptualization of the infrastructure, likely including:
+    \begin{itemize}
+        \item Requirements for the proposed solution
+        \item Specification of a Challenge-Response Protocol
+        \item The concrete design of a database schema, unifying the requirements
+        for challenge-response, neural networks and access control systems in one schema.
+        \item Description of other components, like a backend for response evaluation
+        \item Orchestration and interaction between components
+    \end{itemize}
+    \item \textbf{Implementation}: Will go over the implementation of a prototypical infrastructure.
+    \item \textbf{Evaluation}: Here, the proposed solution will be analyzed in terms of performance, possible security risks,
+    limits and potentials for improvement.
+    \item \textbf{Conclusion}
+\end{enumerate}
+
+\newpage
+\section{Goal and Expected Outcome}
+
+Some personal goals for the thesis are the following:
+\begin{enumerate}
+    \item Answer the selected research questions
+    \item Propose an infrastructure that offers value to the research team
+    and can be used in the final \ac{POC} for the system
+    \item In addition to the specific project, the proposal should
+    be generalizable and offer value to other research projects concerned with similar topics
+    \item Be able to demonstrate a working prototype
+\end{enumerate}
+
+Achieving all of these goals will only be possible if there is enough high-quality existing literature
+available for every topic. Also, good communication with the research team is required.
+The timeframe is hard to assess and might be too short to create a fully working prototype implementation.
+In this case, the scope might have to be adjusted and only a part of the 
+proposal might be realized as a prototype.
+
+\newpage
+\section{Timetable for Creation of the Thesis}
+
+The following Gantt chart shows a rough timetable for completing the thesis, broken down
+into calendar weeks.
+The chart begins in calendar week 35 of 2022, as this week contains the submission date of
+the expos\'{e}, which is the 31st of August.
+All work done prior to that, such as finding a title and writing the expos\'{e}, is not considered
+in this view.
+The deadline for submission of the thesis is the 10th of November 2022.
+
+\
+
+\begin{ganttchart}[
+    expand chart=\textwidth,
+    vgrid,
+    hgrid,
+    y unit chart = 20,
+    ]{35}{45}
+\gantttitle{2022}{11}\\
+\gantttitle{Aug}{1}
+\gantttitle{September}{4}
+\gantttitle{October}{4}
+\gantttitle{Nov}{2}\\
+\gantttitlelist{35,...,45}{1} \\
+
+\ganttbar{Literature Research}{35}{37} \\
+\ganttbar{Introduction}{36}{37} \\
+\ganttbar{Finalize Methodology}{37}{38} \\
+\ganttbar{Fundamentals}{37}{39} \\
+\ganttbar{Conduct Interviews(?)}{39}{40} \\
+\ganttbar{Conception}{40}{42} \\
+\ganttbar{Implementation}{41}{43} \\
+\ganttbar{Evaluation}{43}{43} \\
+\ganttbar{Conclusion}{44}{44} \\
+\ganttbar{Final Touches}{44}{44} \\
+\ganttbar{Buffer \& Corrections}{45}{45} \\
+
+\ganttvrule[vrule offset=.4]{Submission of Expos\'{e}}{35}
+\ganttvrule[vrule offset=.6, vrule label node/.append style={anchor=north east}]{Deadline Thesis}{45}
+\end{ganttchart}
